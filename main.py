@@ -5,7 +5,7 @@ import math as m
 # Calculus single var
 
 
-class c1():
+class C1:
     def __init__(self, func, var, value):
         self._func = func
         self._var = var
@@ -24,32 +24,72 @@ class c1():
         pass
 
     def eval1(self):
-        # Replace function into a python readable function
-        if self._func.__contains__('^'):
-            self._func = self._func('^', '**')
+        _func = self._func
+        _func = _func.replace(self._var, str(self._value))
 
-        if self._func.__contains__('ln'):
-            self._func = self._func('ln', 'm.log')
+        while '^' in _func:
+            left_ind = _func.index('^') - 1
+            right_ind = _func.index('^') + 1
+            left_val = int(_func[left_ind])
+            right_val = int(_func[right_ind])
+            _func = _func[:left_ind] + str(self.power(left_val, right_val)) + _func[right_ind + 1:]
 
-        if self._func.__contains__(self._var):
-            self._func = self._func.replace(self._var, str(self._value))
+        while 'rt' in _func:
+            left_ind = _func.index('rt') - 1
+            right_ind = _func.index('rt') + 2
+            left_val = int(_func[left_ind])
+            right_val = int(_func[right_ind])
+            _func = _func[:left_ind] + str(self.root(left_val, right_val)) + _func[right_ind + 1:]
 
-        if self._func.__contains__('sqrt'):
-            self._func = self._func.replace('sqrt', 'm.sqrt')
+        while '/' in _func:
+            left_ind = _func.index('/') - 1
+            right_ind = _func.index('/') + 1
+            left_val = int(_func[left_ind])
+            right_val = int(_func[right_ind])
+            _func = _func[:left_ind] + str(self.div(left_val, right_val)) + _func[right_ind + 1:]
 
-        if self._func.__contains__('log'):
-            self._func = self._func.replace('log', '(1/m.log(10))*m.log')
+        while '*' in _func:
+            left_ind = _func.index('*') - 1
+            right_ind = _func.index('*') + 1
+            left_val = int(_func[left_ind])
+            right_val = int(_func[right_ind])
+            _func = _func[:left_ind] + str(self.mult(left_val, right_val)) + _func[right_ind+1:]
 
-        # Evaluate using bedmas
-        print(self._func)
+        while '+' in _func:
+            left_ind = _func.index('+') - 1
+            right_ind = _func.index('+') + 1
+            left_val = int(_func[left_ind])
+            right_val = int(_func[right_ind])
+            _func = _func[:left_ind] + str(self.add(left_val, right_val)) + _func[right_ind + 1:]
 
-    def simpl(self):
-        if self._func.__contains__(self._var):
-            self._func = self._func.replace(self._var, str(self._value))
-        print(self._func)
+        while '-' in _func:
+            left_ind = _func.index('-') - 1
+            right_ind = _func.index('-') + 1
+            left_val = int(_func[left_ind])
+            right_val = int(_func[right_ind])
+            _func = _func[:left_ind] + str(self.sub(left_val, right_val)) + _func[right_ind + 1:]
+
+        print(_func)
+
+    def add(self, var1, var2):
+        return var1 + var2
+
+    def mult(self, var1, var2):
+        return var1 * var2
+
+    def div(self, var1, var2):
+        return var1/var2
+
+    def sub(self, var1, var2):
+        return self.add(var1, -var2)
+
+    def root(self, var1, var2):
+        return var1**1/var2
+
+    def power(self, var1, var2):
+        return var1**var2
 
 
-c = c1('log(sqrt(x))', 'x', 1)
-c.simpl()
+c = C1('xrt2','x',2)
 c.eval1()
 
